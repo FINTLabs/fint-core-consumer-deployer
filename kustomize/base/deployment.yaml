@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-deployer
+  namespace: fint-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumer-deployer
+  template:
+    metadata:
+      labels:
+        app: consumer-deployer
+    spec:
+      serviceAccountName: consumer-deployer-sa
+      containers:
+        - name: consumer
+          image: your-image:latest
