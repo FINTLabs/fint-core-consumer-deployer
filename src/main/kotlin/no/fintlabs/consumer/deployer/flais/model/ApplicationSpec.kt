@@ -115,5 +115,87 @@ class ApplicationSpec : KubernetesResource {
     @JsonSetter(nulls = Nulls.SKIP)
     var url: Url? = null
 
+    companion object {
+
+        fun kafkaFromOrg(org: String) = Kafka().apply {
+            enabled = true
+            acls = listOf(
+                Acls().apply {
+                    topic = "${org.replace(".", "-")}.fint-core.*"
+                    permission = "admin"
+                }
+            )
+        }
+
+        fun envFromConsumer(consumer: Consumer, env: String): List<Env> =
+            listOf(
+                Env().apply {
+                    name = "fint.relation.base-url"
+                    value = "https://$env.felleskomponent.no"
+                },
+                Env().apply {
+                    name = "fint.consumer.domain"
+                    value = consumer.domain
+                },
+                Env().apply {
+                    name = "fint.consumer.package"
+                    value = consumer.`package`
+                },
+                Env().apply {
+                    name = "fint.consumer.org-id"
+                    value = consumer.org
+                },
+                Env().apply {
+                    name = "fint.consumer.writeable"
+                    value = consumer.writeableResources.joinToString(",")
+                },
+                Env().apply {
+                    name = "fint.consumer.cache.disabled"
+                    value = consumer.cacheDisabledResources.joinToString(",")
+                }
+            )
+
+        fun ingressFromConsumer(consumer: Consumer, env: String): Ingress {
+            val ingressPath = if (consumer.resources.isNotEmpty()) {
+                val joinedResources = consumer.resources.joinToString("|")
+                "/${consumer.domain}/${consumer.`package`}/{resource:(admin|actuator|$joinedResources)}"
+            } else {
+                "/${consumer.domain}/${consumer.`package`}"
+            }
+
+            return Ingress().apply {
+                routes = listOf(
+                    Routes().apply {
+                        host = "$env.felleskomponent.no"
+                        path = ingressPath
+                        if (consumer.shared.not()) {
+                            headers = mapOf("x-org-id" to consumer.org)
+                        }
+                    }
+                )
+            }
+        }
+
+        fun resourcesFromPodResources(podResources: PodResources) =
+            Resources().apply {
+                requests = mapOf(
+                    "memory" to IntOrString(podResources.requests.memory),
+                    "cpu" to IntOrString(podResources.requests.cpu)
+                )
+                limits = mapOf(
+                    "memory" to IntOrString(podResources.limits.memory),
+                    "cpu" to IntOrString(podResources.limits.cpu)
+                )
+            }
+
+        fun prometheusFromComponent(domain: String, pkg: String) =
+            Prometheus().apply {
+                enabled = true
+                path = "/$domain/$pkg/actuator/prometheus"
+                port = "8080"
+            }
+
+    }
+
 }
 
