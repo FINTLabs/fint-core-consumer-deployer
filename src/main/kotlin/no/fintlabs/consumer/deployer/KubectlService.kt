@@ -26,11 +26,16 @@ class KubectlService(
 
     fun deploymentDoesntExist(consumer: Consumer) = !deploymentExists(consumer)
 
-    fun create(consumer: Consumer): Application =
-        applicationClient
+    fun create(consumer: Consumer): Application {
+        val application = applicationClient
             .inNamespace(formatNameSpace(consumer.org))
             .resource(Application.fromConsumer(consumer, fintProperties.env))
             .create()
+
+        logger.info("Successfully created application: ${application.metadata.name} in namespace: ${consumer.org}")
+
+        return application
+    }
 
     fun update(consumer: Consumer) = TODO("Edit already existing Application")
 
