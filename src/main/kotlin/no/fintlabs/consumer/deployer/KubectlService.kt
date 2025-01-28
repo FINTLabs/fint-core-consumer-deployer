@@ -22,7 +22,11 @@ class KubectlService(
 
     fun deploymentDoesntExist(consumer: Consumer) = !deploymentExists(consumer)
 
-    fun create(consumer: Consumer) = TODO()
+    fun create(consumer: Consumer): Application =
+        applicationClient
+            .inNamespace(formatNameSpace(consumer.org))
+            .resource(Application.fromConsumer(consumer, fintProperties.env))
+            .create()
 
     fun update(consumer: Consumer) = TODO()
 
