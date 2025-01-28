@@ -24,6 +24,7 @@ sourceSets {
 }
 
 repositories {
+	mavenLocal()
 	maven("https://repo.fintlabs.no/releases")
 	mavenCentral()
 }
