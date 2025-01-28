@@ -6,6 +6,7 @@ import no.fintlabs.consumer.deployer.config.FintProperties
 import no.fintlabs.consumer.deployer.flais.model.Application
 import no.fintlabs.consumer.deployer.flais.model.ApplicationList
 import no.fintlabs.consumer.state.interfaces.Consumer
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,6 +14,8 @@ class KubectlService(
     private val applicationClient: MixedOperation<Application, ApplicationList, Resource<Application>>,
     private val fintProperties: FintProperties
 ) {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun deploymentExists(consumer: Consumer): Boolean =
         applicationClient
