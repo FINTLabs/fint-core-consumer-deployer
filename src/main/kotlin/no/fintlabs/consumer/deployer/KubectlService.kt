@@ -1,5 +1,6 @@
 package no.fintlabs.consumer.deployer
 
+import io.fabric8.kubernetes.api.model.StatusDetails
 import io.fabric8.kubernetes.client.dsl.MixedOperation
 import io.fabric8.kubernetes.client.dsl.Resource
 import no.fintlabs.consumer.deployer.config.FintProperties
@@ -31,9 +32,20 @@ class KubectlService(
             .resource(Application.fromConsumer(consumer, fintProperties.env))
             .create()
 
-    fun update(consumer: Consumer) = TODO()
+    fun update(consumer: Consumer) = TODO("Edit already existing Application")
 
-    fun delete(consumer: Consumer) = TODO()
+    fun delete(consumer: Consumer): MutableList<StatusDetails> {
+        val statusDetails = applicationClient
+            .inNamespace(formatNameSpace(consumer.org))
+            .withName(createDeploymentName(consumer.domain, consumer.`package`))
+            .delete()
+
+        statusDetails.forEach { status ->
+            logger.info("Deleted resource: ${status.name} of kind: ${status.kind} in namespace: ${consumer.org}")
+        }
+
+        return statusDetails
+    }
 
     fun createDeploymentName(domain: String, `package`: String) = "fint-core-consumer-$domain-$`package`"
     fun formatNameSpace(org: String) = org.replace(".", "-")
