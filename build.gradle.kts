@@ -32,7 +32,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
-	implementation("no.fintlabs:fint-core-consumer-state-library:unspecified")
+	implementation("no.fintlabs:fint-core-consumer-state-library:1.2.0")
 	implementation("no.fintlabs:fint-core-webhook:1.0.0")
 
 	implementation("io.fabric8:kubernetes-client:6.6.2")
