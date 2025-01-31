@@ -1,2 +1,5 @@
 fint:
-  consumer-url: http://localhost:123
+  webhook:
+    client:
+      server: http://something:8080
+      callback: http://consumer-deployer-service:8080
