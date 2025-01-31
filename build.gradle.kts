@@ -38,6 +38,7 @@ dependencies {
 	implementation("io.fabric8:kubernetes-client:6.6.2")
 	implementation("io.fabric8:generator-annotations:6.6.2")
 
+	implementation("org.slf4j:slf4j-api:2.0.11")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

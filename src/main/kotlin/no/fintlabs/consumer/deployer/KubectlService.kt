@@ -37,7 +37,7 @@ class KubectlService(
         return application
     }
 
-    fun update(consumer: Consumer) = TODO("Edit already existing Application")
+    fun update(consumer: Consumer): Boolean = false
 
     fun delete(consumer: Consumer): MutableList<StatusDetails> {
         val statusDetails = applicationClient

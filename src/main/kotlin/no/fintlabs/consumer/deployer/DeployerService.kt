@@ -1,10 +1,10 @@
 package no.fintlabs.consumer.deployer
 
-import com.sun.org.slf4j.internal.Logger
-import com.sun.org.slf4j.internal.LoggerFactory
 import no.fintlabs.consumer.state.interfaces.Consumer
 import no.fintlabs.consumer.state.model.ConsumerResponse
 import no.fintlabs.consumer.state.model.Operation
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
