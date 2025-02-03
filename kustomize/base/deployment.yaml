@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: consumer-deployer
-  namespace: fint-core
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -13,7 +13,9 @@ spec:
       labels:
         app: consumer-deployer
     spec:
-      serviceAccountName: consumer-deployer-sa
       containers:
-        - name: consumer
-          image: your-image:latest
+        - image: ghcr.io/fintlabs/fint-core-consumer-deployer:v1.0.0-rc-1
+          name: consumer
+          ports:
+            - containerPort: 8080
+      serviceAccountName: consumer-deployer-sa

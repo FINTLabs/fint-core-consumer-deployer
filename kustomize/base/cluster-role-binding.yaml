@@ -5,7 +5,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: consumer-deployer-sa
-    namespace: fint-core
+    namespace: default
 roleRef:
   kind: ClusterRole
   name: consumer-deployer-role
