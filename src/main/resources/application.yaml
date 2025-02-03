@@ -1,4 +1,5 @@
 fint:
+  env: api
   webhook:
     client:
       server: http://something:8080
