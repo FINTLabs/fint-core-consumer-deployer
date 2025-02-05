@@ -46,6 +46,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
+	testImplementation("junit:junit:4.13.2")
+	testImplementation("io.mockk:mockk:1.13.5")
+	testImplementation("io.fabric8:kubernetes-server-mock:7.1.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
