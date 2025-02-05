@@ -1,5 +1,6 @@
 package no.fintlabs.consumer.deployer
 
+import io.fabric8.kubernetes.api.model.Namespace
 import io.fabric8.kubernetes.api.model.NamespaceBuilder
 import io.fabric8.kubernetes.api.model.StatusDetails
 import io.fabric8.kubernetes.client.KubernetesClient
@@ -9,6 +10,7 @@ import no.fintlabs.consumer.deployer.config.FintProperties
 import no.fintlabs.consumer.deployer.flais.model.Application
 import no.fintlabs.consumer.deployer.flais.model.ApplicationList
 import no.fintlabs.consumer.state.interfaces.Consumer
+import no.fintlabs.consumer.state.interfaces.ConsumerIdentificator
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -21,90 +23,59 @@ class KubectlService(
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    fun create(consumer: Consumer): Application {
-        val namespace = formatNameSpace(consumer.org)
-        val application = applicationClient
-            .inNamespace(namespace)
-            .resource(Application.fromConsumer(consumer, fintProperties.env))
-            .create()
-
-        logger.info("Successfully created application: ${application.metadata.name} in namespace: $namespace")
-
-        return application
-    }
-
-    fun update(consumer: Consumer): Application? {
-        val namespace = formatNameSpace(consumer.org)
-        val deploymentName = createDeploymentName(consumer.domain, consumer.`package`)
-        val existingApplication = getExistingApplication(namespace, deploymentName)
-
-        val updatedApplication = existingApplication.apply {
-            spec = Application.fromConsumer(consumer, fintProperties.env).spec
+    fun createApplication(consumer: Consumer): Application =
+        formatNamespace(consumer.org).let { namespace ->
+            ensureNamespaceExists(namespace)
+            applicationClient
+                .inNamespace(namespace)
+                .resource(Application.fromConsumer(consumer, fintProperties.env))
+                .create()
+                .also { logger.info("Application created: ${it.metadata.name} in ${it.metadata.namespace}") }
         }
 
-        val appliedApplication = applicationClient
-            .inNamespace(namespace)
-            .resource(updatedApplication)
-            .update()
+    fun updateApplication(consumer: Consumer): Application =
+        getApplication(consumer)
+            .also { it!!.spec = Application.fromConsumer(consumer, fintProperties.env).spec }
+            .let { applicationClient.inNamespace(formatNamespace(consumer.org)).resource(it).update() }
+            .also { logger.info("Application updated: ${it.metadata.name} in ${it.metadata.namespace}") }
 
-        logger.info("Successfully updated application: ${appliedApplication.metadata.name} in namespace: $namespace")
-
-        return appliedApplication
-    }
-
-    fun delete(consumer: Consumer): MutableList<StatusDetails> {
-        val namespace = formatNameSpace(consumer.org)
-        val statusDetails = applicationClient
-            .inNamespace(namespace)
-            .withName(createDeploymentName(consumer.domain, consumer.`package`))
+    fun delete(consumer: Consumer): MutableList<StatusDetails> =
+        applicationClient
+            .inNamespace(formatNamespace(consumer.org))
+            .withName(formatDeploymentName(consumer.domain, consumer.`package`))
             .delete()
+            .onEach { logger.info("Application deleted: ${it.name} in ${formatNamespace(consumer.org)}") }
 
-        statusDetails.forEach { status ->
-            logger.info("Successfully deleted application: ${status.name} in namespace: $namespace")
-        }
-
-        return statusDetails
-    }
-
-    fun deploymentExists(consumer: Consumer): Boolean {
-        val namespace = formatNameSpace(consumer.org)
-
-        ensureNamespaceExists(namespace)
-
-        return applicationClient
-            .inNamespace(namespace)
-            .withName(createDeploymentName(consumer.domain, consumer.`package`))
-            .get() != null
-    }
-
-    fun deploymentDoesntExist(consumer: Consumer) = !deploymentExists(consumer)
-
-    fun ensureNamespaceExists(namespace: String) {
-        val existingNamespace = kubernetesClient.namespaces().withName(namespace).get()
-
-        if (existingNamespace == null) {
-            logger.info("Namespace $namespace does not exist. Creating...")
-
-            val namespaceResource = NamespaceBuilder()
-                .withNewMetadata()
-                .withName(namespace)
-                .endMetadata()
-                .build()
-
-            kubernetesClient.namespaces().resource(namespaceResource).create()
-            logger.info("Namespace $namespace created successfully.")
-        } else {
-            logger.debug("Namespace $namespace already exists.")
-        }
-    }
-
-
-    fun getExistingApplication(namespace: String, deploymentName: String): Application =
-        applicationClient.inNamespace(namespace)
-            .withName(deploymentName)
+    fun getApplication(consumer: ConsumerIdentificator): Application? =
+        applicationClient
+            .inNamespace(formatNamespace(consumer.org))
+            .withName(formatDeploymentName(consumer.domain, consumer.`package`))
             .get()
 
-    fun createDeploymentName(domain: String, `package`: String) = "fint-core-consumer-$domain-$`package`"
-    fun formatNameSpace(org: String) = org.replace(".", "-")
+    fun applicationExists(consumer: Consumer): Boolean = getApplication(consumer) != null
+
+    fun applicationDoesNotExist(consumer: Consumer) = !applicationExists(consumer)
+
+    fun ensureNamespaceExists(org: String): Namespace =
+        formatNamespace(org).let { namespace ->
+            kubernetesClient.namespaces().withName(namespace).get()?.also {
+                logger.debug("Namespace $namespace already exists.")
+            } ?: run {
+                kubernetesClient.namespaces()
+                    .resource(createNamespaceResource(namespace))
+                    .create()
+                    .also { logger.info("Namespace $namespace created") }
+            }
+        }
+
+    fun createNamespaceResource(namespace: String): Namespace =
+        NamespaceBuilder()
+            .withNewMetadata()
+            .withName(namespace)
+            .endMetadata()
+            .build()
+
+    fun formatDeploymentName(domain: String, `package`: String) = "fint-core-consumer-$domain-$`package`"
+    fun formatNamespace(org: String) = org.replace(".", "-")
 
 }
