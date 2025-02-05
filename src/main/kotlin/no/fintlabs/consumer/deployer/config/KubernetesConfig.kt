@@ -8,8 +8,10 @@ import no.fintlabs.consumer.deployer.flais.model.Application
 import no.fintlabs.consumer.deployer.flais.model.ApplicationList
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 @Configuration
+@Profile("!test")
 class KubernetesConfig {
 
     @Bean
