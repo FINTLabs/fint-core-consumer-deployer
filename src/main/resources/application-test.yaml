@@ -1,0 +1,6 @@
+fint:
+  env: test
+  webhook:
+    client:
+      server: http://something:8080
+      callback: http://consumer-deployer-service:8080
