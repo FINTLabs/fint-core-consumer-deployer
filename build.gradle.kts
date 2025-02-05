@@ -32,7 +32,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
-	implementation("no.fintlabs:fint-core-consumer-state-library:1.2.0") {
+	implementation("no.fintlabs:fint-core-consumer-state-library:1.3.0") {
 		exclude("org.springframework.boot", "spring-boot-starter-data-jpa")
 	}
 	implementation("no.fintlabs:fint-core-webhook:1.0.0")
