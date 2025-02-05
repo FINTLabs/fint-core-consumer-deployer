@@ -37,8 +37,8 @@ dependencies {
 	}
 	implementation("no.fintlabs:fint-core-webhook:1.0.0")
 
-	implementation("io.fabric8:kubernetes-client:6.6.2")
-	implementation("io.fabric8:generator-annotations:6.6.2")
+	implementation("io.fabric8:kubernetes-client:7.1.0")
+	implementation("io.fabric8:generator-annotations:7.1.0")
 
 	implementation("org.slf4j:slf4j-api:2.0.11")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
