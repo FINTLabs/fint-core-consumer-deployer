@@ -21,21 +21,21 @@ class DeployerService(private val kubectl: KubectlService) {
     }
 
     private fun handleCreate(consumer: Consumer) {
-        kubectl.takeIf { it.deploymentDoesntExist(consumer) }
-            ?.create(consumer)
-            ?: log.error("Skipping creation... Deployment already exists: {}", createConsumerId(consumer))
+        kubectl.takeIf { it.applicationExists(consumer).not() }
+            ?.createApplication(consumer)
+            ?: log.warn("Skipping creation... Deployment already exists: {}", createConsumerId(consumer))
     }
 
     private fun handleUpdate(consumer: Consumer) {
-        kubectl.takeIf { it.deploymentExists(consumer) }
-            ?.update(consumer)
-            ?: log.error("Skipping update... Deployment doesn't exist: {}", createConsumerId(consumer))
+        kubectl.takeIf { it.applicationExists(consumer) }
+            ?.updateApplication(consumer)
+            ?: log.warn("Skipping update... Deployment doesn't exist: {}", createConsumerId(consumer))
     }
 
     private fun handleDelete(consumer: Consumer) {
-        kubectl.takeIf { it.deploymentExists(consumer) }
+        kubectl.takeIf { it.applicationExists(consumer) }
             ?.delete(consumer)
-            ?: log.error("Skipping deletion... Deployment doesn't exist: {} ", createConsumerId(consumer))
+            ?: log.warn("Skipping deletion... Deployment doesn't exist: {} ", createConsumerId(consumer))
     }
 
     private fun createConsumerId(consumer: Consumer) = "${consumer.domain}-${consumer.`package`}-${consumer.org}"
