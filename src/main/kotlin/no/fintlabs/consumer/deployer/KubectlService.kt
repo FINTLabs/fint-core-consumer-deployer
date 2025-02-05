@@ -46,7 +46,7 @@ class KubectlService(
             .delete()
 
         statusDetails.forEach { status ->
-            logger.info("Deleted resource: ${status.name} of kind: ${status.kind} in namespace: ${consumer.org}")
+            logger.info("Successfully deleted application: ${status.name} in namespace: ${consumer.org}")
         }
 
         return statusDetails
