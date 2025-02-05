@@ -54,8 +54,6 @@ class KubectlService(
 
     fun applicationExists(consumer: Consumer): Boolean = getApplication(consumer) != null
 
-    fun applicationDoesNotExist(consumer: Consumer) = !applicationExists(consumer)
-
     fun ensureNamespaceExists(org: String): Namespace =
         formatNamespace(org).let { namespace ->
             kubernetesClient.namespaces().withName(namespace).get()?.also {
