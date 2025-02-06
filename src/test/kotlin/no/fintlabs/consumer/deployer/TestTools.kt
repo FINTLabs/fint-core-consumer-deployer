@@ -22,16 +22,7 @@ class TestTools {
                 version = "version-${randomString()}",
                 org = "org-${randomString()}",
                 shared = randomBoolean(),
-                podResources = PodResources(
-                    limits = Limits(
-                        memory = "mem-limit-${randomString()}",
-                        cpu = "cpu-limit-${randomString()}"
-                    ),
-                    requests = Requests(
-                        memory = "mem-req-${randomString()}",
-                        cpu = "cpu-req-${randomString()}"
-                    )
-                ),
+                podResources = PodResources(),
                 resources = listOf("res1-${randomString()}", "res2-${randomString()}"),
                 writeableResources = listOf("wres1-${randomString()}"),
                 cacheDisabledResources = listOf("cdres1-${randomString()}")
