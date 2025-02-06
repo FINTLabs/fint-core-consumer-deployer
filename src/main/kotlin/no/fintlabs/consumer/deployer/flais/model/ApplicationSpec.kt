@@ -130,6 +130,10 @@ class ApplicationSpec : KubernetesResource {
         fun envFromConsumer(consumer: Consumer, env: String): List<Env> =
             listOf(
                 Env().apply {
+                    name = "JAVA_TOOL_OPTIONS"
+                    value = "-XX:+ExitOnOutOfMemoryError -Xmx${calculateXmx(consumer.podResources.limits.memory)}"
+                },
+                Env().apply {
                     name = "fint.relation.base-url"
                     value = "https://$env.felleskomponent.no"
                 },
@@ -154,6 +158,34 @@ class ApplicationSpec : KubernetesResource {
                     value = consumer.cacheDisabledResources.joinToString(",")
                 }
             )
+
+        private fun calculateXmx(memoryLimit: String): String {
+            val totalMi = parseMemoryMi(memoryLimit)
+
+            val xmxMi = if (totalMi <= 1536) {
+                (totalMi - 300).coerceAtLeast(0)
+            } else {
+                (totalMi * 0.8).toLong()
+            }
+
+            return "-Xmx${xmxMi}M"
+        }
+
+        private fun parseMemoryMi(memoryLimit: String): Long {
+            return when {
+                memoryLimit.endsWith("Mi") -> {
+                    memoryLimit.removeSuffix("Mi").toLong()
+                }
+
+                memoryLimit.endsWith("Gi") -> {
+                    val gigabytes = memoryLimit.removeSuffix("Gi").toLong()
+                    gigabytes * 1024
+                }
+
+                else -> throw IllegalArgumentException("Unknown memory unit: $memoryLimit")
+            }
+        }
+
 
         fun ingressFromConsumer(consumer: Consumer, env: String): Ingress {
             val ingressPath = if (consumer.resources.isNotEmpty()) {
