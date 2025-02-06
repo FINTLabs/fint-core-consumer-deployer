@@ -44,8 +44,17 @@ class KubectlServiceTest {
         assertNull(nsBefore)
 
         kubectlService.ensureNamespaceExists(testOrg)
+
         val nsAfter = kubernetesClient.namespaces().withName(namespace).get()
         assertNotNull(nsAfter)
     }
+
+    @Test
+    fun `test format namespace`() =
+        assertEquals(
+            testOrg.replace(".", "-"),
+            kubectlService.formatNamespace(testOrg)
+        )
+
 
 }
