@@ -50,6 +50,13 @@ class KubectlServiceTest {
     }
 
     @Test
+    fun `test format deployment name`() =
+        assertEquals(
+            "fint-core-consumer-${testConsumer.domain}-${testConsumer.`package`}",
+            kubectlService.formatDeploymentName(testConsumer.domain, testConsumer.`package`)
+        )
+
+    @Test
     fun `test format namespace`() =
         assertEquals(
             testOrg.replace(".", "-"),
