@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
+import kotlin.math.exp
 
 @SpringBootTest
 @Import(TestKubernetesConfig::class)
@@ -35,6 +36,24 @@ class KubectlServiceTest {
             kubernetesClient.namespaces().withName(testOrg).delete()
         } catch (_: Exception) {
         }
+    }
+
+    // TODO: Test update among many, verify integrity of each application
+
+    // TODO: Test creation when Application already exists
+
+    // TODO: Test creation among many resources, verify it exists
+
+    // TODO: Test deletion of only one application among many
+
+    // TODO: Test deletion when it doesnt exist
+
+    @Test
+    fun `test deletion doesnt delete anything when no Application match`() {
+        val expectedAmount = 100
+        generateRandomApplications(expectedAmount)
+        assertEquals(expectedAmount, kubectlService.applicationCount())
+        assertEquals(0, kubectlService.delete(testConsumer).size)
     }
 
     @Test
@@ -83,5 +102,16 @@ class KubectlServiceTest {
             kubectlService.formatNamespace(testOrg)
         )
 
+    fun generateRandomApplications(amount: Int) {
+        for (i in 1..amount) {
+            val consumer = ConsumerRequest(
+                domain = "domain$i",
+                `package` = "package$i",
+                version = "1.0.$i",
+                org = "$testOrg-$i"
+            )
+            kubectlService.createApplication(consumer)
+        }
+    }
 
 }
