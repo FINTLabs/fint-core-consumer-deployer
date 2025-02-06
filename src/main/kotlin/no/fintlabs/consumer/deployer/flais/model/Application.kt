@@ -31,7 +31,7 @@ class Application : CustomResource<ApplicationSpec, ApplicationStatus>(), Namesp
                         "app.kubernetes.io/instance"  to "${appName}_${org.replace(".", "_")}",
                         "app.kubernetes.io/version"   to "latest",
                         "app.kubernetes.io/component" to "consumer",
-                        "app.kubernetes.io/part-of"   to "fint-core",
+                        "app.kubernetes.io/part-of"   to "fint-felleskomponent",
                         "fintlabs.no/team"            to "core",
                         "fintlabs.no/org-id"          to org
                     )
