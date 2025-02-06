@@ -38,6 +38,14 @@ class KubectlServiceTest {
     }
 
     @Test
+    fun `test deletion of existing Application`() {
+        kubectlService.createApplication(testConsumer)
+        assertNotNull(kubectlService.getApplication(testConsumer))
+        kubectlService.delete(testConsumer)
+        assertNull(kubectlService.getApplication(testConsumer))
+    }
+
+    @Test
     fun `test get existing Application returns null`() =
         assertNull(kubectlService.getApplication(testConsumer))
 
