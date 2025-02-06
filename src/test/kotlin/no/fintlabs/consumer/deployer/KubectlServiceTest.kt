@@ -36,6 +36,11 @@ class KubectlServiceTest {
         } catch (_: Exception) {
         }
     }
+
+    @Test
+    fun `test get existing Application returns null`() =
+        assertNull(kubectlService.getApplication(testConsumer))
+
     @Test
     fun `test get existing Application`() {
         val createdApplication = kubectlService.createApplication(testConsumer)
