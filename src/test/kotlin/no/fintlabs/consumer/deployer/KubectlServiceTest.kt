@@ -36,6 +36,13 @@ class KubectlServiceTest {
         } catch (_: Exception) {
         }
     }
+    @Test
+    fun `test get existing Application`() {
+        val createdApplication = kubectlService.createApplication(testConsumer)
+        val existingApplication = kubectlService.getApplication(testConsumer)
+
+        assertEquals(createdApplication.metadata.name, existingApplication!!.metadata.name)
+    }
 
     @Test
     fun `test ensureNamespaceExists creates a namespace if missing`() {
