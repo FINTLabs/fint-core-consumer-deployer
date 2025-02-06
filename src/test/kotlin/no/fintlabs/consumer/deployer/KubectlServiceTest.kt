@@ -44,10 +44,6 @@ class KubectlServiceTest {
 
     // TODO: Test creation among many resources, verify it exists
 
-    // TODO: Test deletion of only one application among many
-
-    // TODO: Test deletion when it doesnt exist
-
     @Test
     fun `test deletion doesnt delete anything when no Application match`() {
         val expectedAmount = 100
@@ -58,10 +54,17 @@ class KubectlServiceTest {
 
     @Test
     fun `test deletion of existing Application`() {
+        val expectedAmount = 100
+        generateRandomApplications(expectedAmount)
         kubectlService.createApplication(testConsumer)
+
+        assertEquals(expectedAmount + 1, kubectlService.applicationCount())
         assertNotNull(kubectlService.getApplication(testConsumer))
+
         kubectlService.delete(testConsumer)
+
         assertNull(kubectlService.getApplication(testConsumer))
+        assertEquals(expectedAmount, kubectlService.applicationCount())
     }
 
     @Test
