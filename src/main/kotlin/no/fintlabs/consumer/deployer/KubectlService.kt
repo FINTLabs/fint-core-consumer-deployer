@@ -25,7 +25,7 @@ class KubectlService(
 
     fun createApplication(consumer: Consumer): Application =
         formatNamespace(consumer.org).let { namespace ->
-            ensureNamespaceExists(namespace)
+            ensureNamespace(namespace)
             applicationClient
                 .inNamespace(namespace)
                 .resource(Application.fromConsumer(consumer, fintProperties.env))
@@ -54,7 +54,7 @@ class KubectlService(
 
     fun applicationExists(consumer: Consumer): Boolean = getApplication(consumer) != null
 
-    fun ensureNamespaceExists(org: String): Namespace =
+    fun ensureNamespace(org: String): Namespace =
         formatNamespace(org).let { namespace ->
             kubernetesClient.namespaces().withName(namespace).get()?.also {
                 logger.debug("Namespace $namespace already exists.")
@@ -73,7 +73,6 @@ class KubectlService(
             .endMetadata()
             .build()
 
-    fun applicationCount() = applicationClient.inAnyNamespace().list().items.size
     fun formatDeploymentName(domain: String, `package`: String) = "fint-core-consumer-$domain-$`package`"
     fun formatNamespace(org: String) = org.replace(".", "-")
 
