@@ -66,13 +66,14 @@ class KubectlService(
             }
         }
 
-    fun createNamespaceResource(namespace: String): Namespace =
+    private fun createNamespaceResource(namespace: String): Namespace =
         NamespaceBuilder()
             .withNewMetadata()
             .withName(namespace)
             .endMetadata()
             .build()
 
+    fun applicationCount() = applicationClient.inAnyNamespace().list().items.size
     fun formatDeploymentName(domain: String, `package`: String) = "fint-core-consumer-$domain-$`package`"
     fun formatNamespace(org: String) = org.replace(".", "-")
 
