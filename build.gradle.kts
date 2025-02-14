@@ -35,7 +35,7 @@ dependencies {
 	implementation("no.fintlabs:fint-core-consumer-state-library:1.3.0") {
 		exclude("org.springframework.boot", "spring-boot-starter-data-jpa")
 	}
-	implementation("no.fintlabs:fint-core-webhook:2.0.0-rc-2")
+	implementation("no.fintlabs:fint-core-webhook:2.0.0-rc-4")
 
 	implementation("io.fabric8:kubernetes-client:7.1.0")
 	implementation("io.fabric8:generator-annotations:7.1.0")
