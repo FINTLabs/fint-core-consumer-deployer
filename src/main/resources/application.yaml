@@ -2,5 +2,5 @@ fint:
   env: api
   webhook:
     client:
-      server: http://something:8080
+      server: http://fint-core-consumer-state:8080
       callback: http://consumer-deployer-service:8080
