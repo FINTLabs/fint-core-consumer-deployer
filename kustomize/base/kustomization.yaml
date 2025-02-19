@@ -6,3 +6,6 @@ resources:
   - service-account.yaml
   - service.yaml
   - deployment.yaml
+labels:
+  - pairs:
+      test: blabla
