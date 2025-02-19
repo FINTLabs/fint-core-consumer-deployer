@@ -5,5 +5,5 @@ resources:
 configMapGenerator:
   - name: fint-core-consumer-deployer-config
     namespace: fint-core
-    files:
-      - config.yaml
+    literals:
+      - fint.env=api

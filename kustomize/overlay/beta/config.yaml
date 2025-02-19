@@ -1,7 +1,0 @@
-fint:
-  env: api
-  webhook:
-    client:
-      server: http://fint-core-consumer-state:8080
-      callbacks:
-        consumer: http://consumer-deployer-service:8080

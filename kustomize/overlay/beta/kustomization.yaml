@@ -5,8 +5,5 @@ resources:
 configMapGenerator:
   - name: fint-core-consumer-deployer-config
     namespace: fint-core
-    files:
-      - config.yaml
-labels:
-  - pairs:
-      test: asdf123
+    literals:
+      - fint.env=api
