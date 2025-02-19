@@ -14,7 +14,7 @@ spec:
         app: consumer-deployer
     spec:
       containers:
-        - image: ghcr.io/fintlabs/fint-core-consumer-deployer:v1.0.0
+        - image: ghcr.io/fintlabs/fint-core-consumer-deployer:v1.0.0-rc-3
           name: consumer
           ports:
             - containerPort: 8080
