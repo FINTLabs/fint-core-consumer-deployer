@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: consumer-deployer-service
-  namespace: default
+  name: fint-core-consumer-deployer
+  namespace: fint-core
 spec:
   selector:
-    app: consumer-deployer
+    app: fint-core-consumer-deployer
   ports:
     - protocol: TCP
       port: 8080

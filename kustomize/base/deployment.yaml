@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: consumer-deployer
-  namespace: default
+  name: fint-core-consumer-deployer
+  namespace: fint-core
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: consumer-deployer
+      app: fint-core-consumer-deployer
   template:
     metadata:
       labels:
-        app: consumer-deployer
+        app: fint-core-consumer-deployer
     spec:
       containers:
         - image: ghcr.io/fintlabs/fint-core-consumer-deployer:v1.0.0-rc-3
           name: consumer
           ports:
             - containerPort: 8080
-      serviceAccountName: consumer-deployer-sa
+      serviceAccountName: fint-core-consumer-deployer-sa
