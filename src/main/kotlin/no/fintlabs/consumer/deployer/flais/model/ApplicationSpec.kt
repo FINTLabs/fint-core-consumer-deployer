@@ -8,7 +8,6 @@ import io.fabric8.generator.annotation.Required
 import io.fabric8.kubernetes.api.model.IntOrString
 import io.fabric8.kubernetes.api.model.KubernetesResource
 import no.fintlabs.consumer.state.interfaces.Consumer
-import no.fintlabs.consumer.state.model.PodResources
 import no.fintlabs.v1alpha1.applicationspec.*
 import no.fintlabs.v1alpha1.applicationspec.ingress.Routes
 import no.fintlabs.v1alpha1.applicationspec.kafka.Acls
@@ -131,7 +130,7 @@ class ApplicationSpec : KubernetesResource {
             listOf(
                 Env().apply {
                     name = "JAVA_TOOL_OPTIONS"
-                    value = "-XX:+ExitOnOutOfMemoryError -Xmx${calculateXmx(consumer.podResources.limits.memory)}"
+                    value = "-XX:+ExitOnOutOfMemoryError -Xmx${calculateXmx(consumer.limitsMemory)}"
                 },
                 Env().apply {
                     name = "fint.relation.base-url"
@@ -208,15 +207,15 @@ class ApplicationSpec : KubernetesResource {
             }
         }
 
-        fun resourcesFromPodResources(podResources: PodResources) =
+        fun resourcesFromConsumer(consumer: Consumer) =
             Resources().apply {
                 requests = mapOf(
-                    "memory" to IntOrString(podResources.requests.memory),
-                    "cpu" to IntOrString(podResources.requests.cpu)
+                    "memory" to IntOrString(consumer.requestsMemory),
+                    "cpu" to IntOrString(consumer.requestsCpu)
                 )
                 limits = mapOf(
-                    "memory" to IntOrString(podResources.limits.memory),
-                    "cpu" to IntOrString(podResources.limits.cpu)
+                    "memory" to IntOrString(consumer.limitsMemory),
+                    "cpu" to IntOrString(consumer.limitsCpu)
                 )
             }
 

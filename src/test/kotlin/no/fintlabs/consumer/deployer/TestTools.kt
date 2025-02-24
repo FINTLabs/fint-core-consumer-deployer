@@ -2,7 +2,6 @@ package no.fintlabs.consumer.deployer
 
 import no.fintlabs.consumer.deployer.flais.model.ApplicationSpec
 import no.fintlabs.consumer.state.model.ConsumerRequest
-import no.fintlabs.consumer.state.model.PodResources
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.util.*
 import kotlin.random.Random
@@ -20,7 +19,6 @@ class TestTools {
                 version = "version-${randomString()}",
                 org = "org-${randomString()}",
                 shared = randomBoolean(),
-                podResources = PodResources(),
                 resources = listOf("res1-${randomString()}", "res2-${randomString()}"),
                 writeableResources = listOf("wres1-${randomString()}"),
                 cacheDisabledResources = listOf("cdres1-${randomString()}")

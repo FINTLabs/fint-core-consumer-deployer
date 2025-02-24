@@ -44,7 +44,7 @@ class Application : CustomResource<ApplicationSpec, ApplicationStatus>(), Namesp
                     env = ApplicationSpec.envFromConsumer(consumer, clusterEnv)
                     kafka = ApplicationSpec.kafkaFromOrg(consumer.org)
                     ingress = ApplicationSpec.ingressFromConsumer(consumer, clusterEnv)
-                    resources = ApplicationSpec.resourcesFromPodResources(consumer.podResources)
+                    resources = ApplicationSpec.resourcesFromConsumer(consumer)
                     prometheus = ApplicationSpec.prometheusFromComponent(consumer.domain, consumer.`package`)
                 }
             }
