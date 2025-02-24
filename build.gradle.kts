@@ -32,9 +32,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 
-	implementation("no.fintlabs:fint-core-consumer-state-library:1.3.0") {
-		exclude("org.springframework.boot", "spring-boot-starter-data-jpa")
-	}
+	implementation("no.fintlabs:fint-core-consumer-state-library:2.0.0-rc-1")
 	implementation("no.fintlabs:fint-core-webhook:2.0.0-rc-4")
 
 	implementation("io.fabric8:kubernetes-client:7.1.0")
